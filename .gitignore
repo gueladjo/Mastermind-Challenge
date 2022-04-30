@@ -172,3 +172,9 @@ cython_debug/
 
 # End of https://www.toptal.com/developers/gitignore/api/flask
 .DS_Store
+mastermindweb/migrations/alembic.ini
+mastermindweb/migrations/env.py
+mastermindweb/migrations/README
+mastermindweb/migrations/script.py.mako
+mastermindweb/data.sqlite
+mastermindweb/migrations/versions/30c366a50874_first_migration.py
