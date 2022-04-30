@@ -10,7 +10,6 @@ from flask_login import UserMixin
 def load_user(user_id):
     return User.query.get(user_id)
 
-################Implement User model##############
 class User(db.Model, UserMixin):
 
     # Create a table in the db
@@ -21,7 +20,6 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(64), unique=True, index=True)
     username = db.Column(db.String(64), unique=True, index=True)
     password_hash = db.Column(db.String(128))
-
     # This connects BlogPosts to a User Author.
     posts = db.relationship('BlogPost', backref='author', lazy=True)
 
@@ -37,8 +35,6 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"UserName: {self.username}"
 
-
-################Implement blogpost model##############
 class BlogPost(db.Model):
     # Setup the relationship to the User table
     users = db.relationship(User)
@@ -59,5 +55,3 @@ class BlogPost(db.Model):
 
     def __repr__(self):
         return f"Post Id: {self.id} --- Date: {self.date} --- Title: {self.title}"
-
-################Implement gaming model##############

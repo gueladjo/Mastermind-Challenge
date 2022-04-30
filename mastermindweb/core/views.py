@@ -1,11 +1,8 @@
-##Creates/updates users with the use of forms 
-
 from flask import render_template,request,Blueprint
 from mastermindweb.models import BlogPost
 
 core = Blueprint('core',__name__)
 
-##Homepage
 @core.route('/')
 def index():
 
@@ -13,7 +10,6 @@ def index():
     blog_posts = BlogPost.query.order_by(BlogPost.date.desc()).paginate(page=page, per_page=10)
     return render_template('index.html',blog_posts=blog_posts)
 
-##General information about the game
 @core.route('/info')
 def info():
 
