@@ -12,15 +12,15 @@ from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
 from mastermindweb.models import User
 
+####################Using Flask Forms to handle validations###############
 
-
-
+#Form for User login
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Log In')
 
-
+#Form for User registration
 class RegistrationForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(),Email()])
     username = StringField('Username', validators=[DataRequired()])
@@ -36,7 +36,7 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Username is already taken!')
 
 
-
+#Form for making updates to user
 class UpdateUserForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(),Email()])
     username = StringField('Username', validators=[DataRequired()])
