@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
+
+
+
+
 <div class="bg-light p-5 rounded-lg m-3">
   <h1 class="display-4">Play for free</h1>
   <p class="lead">Create your account and discover more ways to play and win </p>
@@ -15,7 +19,7 @@
     <div class="card-body">
       <h5 class="card-title">MasterMind</h5>
       <p class="card-text">Break the secret code in the fewest number of guesses.</p>
-      <a href="#" class="btn btn-primary btn-lg">Play Game</a>
+      <a href="{{ url_for('game.chooselevel') }}" class="btn btn-primary btn-lg">Play Game</a>
     </div>
   </div>
 
