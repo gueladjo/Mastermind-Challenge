@@ -1,10 +1,14 @@
 from flask import render_template,request,Blueprint
 from mastermindweb.models import BlogPost
-
+from mastermindweb.game.views import session
 core = Blueprint('core',__name__)
 
 @core.route('/')
 def index():
+
+    #####Reset game date if we go to homepage######
+    session['attempts'] = 0
+    session['counter']= []  
 
     return render_template('index.html')
 
