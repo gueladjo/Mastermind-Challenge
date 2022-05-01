@@ -10,3 +10,9 @@ def chooselevel():
     
     return render_template('game_pages/levelpage.html')
 
+
+@game.route('/startgame/mastermind', methods=['GET', 'POST'])
+def startgame():
+    
+    return render_template('game_pages/gamepage.html')
+
