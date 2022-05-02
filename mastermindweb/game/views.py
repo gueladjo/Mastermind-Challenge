@@ -1,3 +1,4 @@
+from tracemalloc import start
 from turtle import position
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
@@ -23,16 +24,26 @@ def chooselevel():
 def startgame():
     ###########Adding values to keys to prevent key errors###########
     initializesession()
-
+    startedgame = False
     ####Save user input into guess variable#####
     form = GuessingForm()
+    validated = form.validate_on_submit() or form.validate_guess(form.guesscombo)
+
+
+    print(f"These are the forms {validated}")
+    if validated == None or validated == False: 
+        flash('Please enter a valid number combination!') 
+        return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(1,session['attempts']), 
+                            correctposition=0, wrongposition=0)
+
+
     guess = str(form.guesscombo.data)
-    session['guesses'].append(guess)
+    if guess != 'None' or not validated: session['guesses'].append(guess)
     print(f"Previous guesses are {session['guesses']}")
 
     positions = calculateposition()
-    correctpositiondigits = positions[0]
-    wrongpositiondigits = positions[1]
+    correctpositiondigits = positions[0] if positions else 0
+    wrongpositiondigits = positions[1] if positions else 0
 
 
     print((guess, session['answer'] if session['answer'] else ""))
@@ -42,18 +53,21 @@ def startgame():
         score = calcultatescore()#####To implement later, we will also add to database in order to create leaderboard
         resetdata()
         positions = (0, 0)
-        flash('You have found the answer')
+        return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(1,session['attempts']), 
+                            correctposition=correctpositiondigits, wrongposition=wrongpositiondigits)
 
     
-    if session['attempts'] == 0:
+    if session['attempts'] == 0 and not session['startedgame']:
         answercode = ""
         for i in range(4):
             answercode += str(random.randint(0, 9))
         session["answer"] = answercode
+    session['attempts'] += 1 if guess != 'None' or not validated else 0
+    session['startedgame'] = True
+    print(f"guess: {guess}  attempts: {session['attempts']}")
+
     
-    session['attempts'] += 1 if guess else 0
-    
-    return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=session['attempts'], 
+    return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(1,session['attempts']), 
                             correctposition=correctpositiondigits, wrongposition=wrongpositiondigits)
 
 

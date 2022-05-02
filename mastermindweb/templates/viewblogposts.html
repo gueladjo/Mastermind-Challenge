@@ -3,11 +3,24 @@
 
 {% if not current_user.is_authenticated %}
 
-<h1> Please log in or register an account to engage with our community</h1>
+<body>
+  <div class="toast show" role='alert'>
+    <div class="toast-header">
+      Alert
+      <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+    </div>
+    <div class="toast-body">
+      Please log in or register to engage in discussion board
+    </div>
+  </div>
+  <script src="viewblogposts.js">
+    </script>
+</body>
+
 {% endif %}
 
-
-
+<br>
+<br>
 
 
 

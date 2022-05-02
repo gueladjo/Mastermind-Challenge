@@ -22,6 +22,7 @@ def resetdata():
     session['attempts'] = 0
     session['answer']= ""
     session['guesses'] = []
+    session['startedgame'] = False
 
 def initializesession():
     if "answer" not in session:
@@ -30,17 +31,29 @@ def initializesession():
         session["attempts"]=0
     if 'guesses' not in session:
         session['guesses'] = []
+    if 'startedgame' not in session:
+        session['startedgame'] = []
+    
 
 def calcultatescore():
     pass
 
 def calculateposition():
-    goodpos, goodnum = 0, 0
-    for anspos, anschar in enumerate(session['answer']):
-        for guesspos, guesschar in enumerate(session['guesses'][-1]):
-            if anspos == guesspos and anschar == guesschar:
-                goodpos += 1
-            elif anschar == guesschar:
-                goodnum += 1
-    return (goodpos, goodnum)
+    reds, whites = 0, 0
+    if not session['answer'] or not session['guesses']: return (0, 0)
+
+    answer, guess = session['answer'], session['guesses'][-1]
+    if len(answer) != len(guess): return (0, 0)
+
+    for key, digit in enumerate(guess):
+        if digit == answer[key]:
+            reds += 1
+        else:
+            for answerDigit in answer:
+                if answerDigit == digit:
+                    whites += 1
+                    break   ###Only counting one number if guess equals 2 numbers in given combination
+
+    return (reds, whites) if not None else (0,0)
+                
 
