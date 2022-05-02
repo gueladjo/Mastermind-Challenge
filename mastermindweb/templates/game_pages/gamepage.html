@@ -4,27 +4,29 @@
     <p>
 
     </p>
-    <h3> I've chosen a 4 digit number, can you guess it ? </h3><br><br>
+    <h3> I've chosen a 4 digit number combination from 0 to 7, can you guess it ? </h3>
 
 
     <form  class="form form-horizontal" method="POST">
         {{ form.hidden_tag() }}
         <div class="form-group">
-            {{ form.guesscombo(class_="form-control", size=10) }}
+            {{ form.guesscombo(class_="form-control", size=10, placeholder="ex: If your guess is 1234, write 1234") }}
         </div>
         {{ form.submit(class_="form form-horizontal") }}
     
     </form>
 
-    <br>The generated guess is {{answer}}
+
+
+
+    <br>For testing: The generated guess is {{answer}}
 
     <br> Attempts: {{attempts-1}}
 
     <br>
-    <br> Correct position: {{correctposition}}
-    <br> Wrong position: {{wrongposition}}
+    <br> <h2 style="color:dodgerblue">Correct position: {{correctposition}}</h2>
+    <br> <h2 style="color:indianred">Wrong position: {{wrongposition}} </h2>
 
-    
 
   </p>
 

@@ -1,6 +1,26 @@
 {% extends "base.html" %}
 {% block content %}
 
+{% if not current_user.is_authenticated %}
+
+<h1> Please log in or register an account to engage with our community</h1>
+{% endif %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <div class="container">
 
     {# Go through each blog post #}

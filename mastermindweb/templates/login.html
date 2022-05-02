@@ -5,15 +5,27 @@
     {{ form.hidden_tag() }}
     <div class="form-group">
         {{ form.email.label }}
-        {{ form.email(class_="form-control", size=32) }}
+        {{ form.email(class_="form-control", size=32, placeholder="email address") }}
     </div>
     <div class="form-group">
         {{ form.password.label }}
-        {{ form.password(class_="form-control", size=32) }}
+        {{ form.password(class_="form-control", size=32, placeholder="Password") }}
     </div><br>
     {{ form.submit(class_="form form-horizontal") }}
 
 </form>
+
+
+
+  {% if current_user.is_authenticated %}
+  <body>
+    {% for mesg in get_flashed_messages() %}
+    <h1>{{ mesg }}</h1>
+    {% endfor %}
+  </body>
+            {% endif %}
+
+
 {% endblock %}
 
 
