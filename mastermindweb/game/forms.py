@@ -18,7 +18,7 @@ class GuessingForm(FlaskForm):
     def validate_guess(form, field):
         if str(field) == "0000":
             return True
-        elif not field or len(str(field.data)) > 4:
+        elif not field or len(str(field.data)) != 4:
             return False
 
 
