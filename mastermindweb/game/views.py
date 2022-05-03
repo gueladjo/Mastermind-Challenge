@@ -2,7 +2,7 @@ from tracemalloc import start
 from turtle import position
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
-from mastermindweb.game.gaming import initializesession, resetdata, calcultatescore, calculateposition
+from mastermindweb.game.gaming import initializesession, resetdata, calcultatescore, calculateposition, Hints, gethints
 from mastermindweb.game.forms import GuessingForm
 from flask_restful import abort
 from mastermindweb import db
@@ -41,14 +41,13 @@ def startgame():
         return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(1,session['attempts']), 
                             correctposition=0, wrongposition=0)
 
+    positions = calculateposition(userguess)
+    correctposition = positions[0] if positions else 0
+    wrongposition = positions[1] if positions else 0
 
-    if isvalid: session['guesses'].append(userguess)
+
+    if isvalid: session['guesses'].append(Hints(userguess, correctposition, wrongposition))
     print(f"Previous guesses are {session['guesses']}")
-
-    positions = calculateposition()
-    correctpositiondigits = positions[0] if positions else 0
-    wrongpositiondigits = positions[1] if positions else 0
-
 
     print((userguess, session['answer'] if session['answer'] else ""))
     #######If we've found the answer##########################
@@ -58,9 +57,11 @@ def startgame():
         attempts = session['attempts']
         resetdata()
         positions = (0, 0)
-        flash('Congratulations, You have won the game in {} attempts(s)'.format(attempts + 1)) 
+        flash('Congratulations, You have won the game in {} attempts(s)'.format(attempts + 1))
+        hints = gethints()
+        print(hints)
         return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,attempts), 
-                            correctposition=correctpositiondigits, wrongposition=wrongpositiondigits)
+                            correctposition=correctposition, wrongposition=wrongposition)
 
     
     print(f"Session attempts: {session['attempts']}        Has game started ? : {session['startedgame']}")
@@ -76,7 +77,7 @@ def startgame():
 
     
     return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,session['attempts']), 
-                            correctposition=correctpositiondigits, wrongposition=wrongpositiondigits)
+                            correctposition=correctposition, wrongposition=wrongposition)
 
 
 

@@ -2,7 +2,7 @@ from mastermindweb import app
 from flask import Flask, session
 from flask_session import Session
 from flask import render_template, url_for, flash, redirect, request, Blueprint
-
+from collections import namedtuple
 
 
 
@@ -15,6 +15,11 @@ app.config.from_object(__name__)
 #To share data between requests, we can store data in a session instead of having to store in a database
 #A session makes it possible to remember information from one request to another. The way Flask does this is by using a signed cookie
 Session(app)
+
+
+################
+#Create namedtuple in order to store hints
+Hints = namedtuple('Hints', ['userguess', 'correctcount', 'wrongcount'])
 
 
 
@@ -38,11 +43,11 @@ def initializesession():
 def calcultatescore():
     pass
 
-def calculateposition():
+def calculateposition(userguess):
     reds, whites = 0, 0
-    if not session['answer'] or not session['guesses']: return (0, 0)
+    if not session['answer'] or not userguess: return (0, 0)
 
-    answer, guess = session['answer'], session['guesses'][-1]
+    answer, guess = session['answer'], userguess
     if len(answer) != len(guess): return (0, 0)
 
     for key, digit in enumerate(guess):
@@ -55,5 +60,11 @@ def calculateposition():
                     break   ###Only counting one number if guess equals 2 numbers in given combination
 
     return (reds, whites) if not None else (0,0)
+
+
+
+def gethints():
+    # Get hints by decreasing order of total position found #
+    return sorted(session['guesses'], key=lambda x: x[1] + x[2], reverse=True)
                 
 

@@ -77,7 +77,15 @@
 
 <div class="text-center"> 
   <div class="d-grid gap-2 col-3 mx-auto">
-    <button type="button" class="btn btn-primary" data-bs-toggle="button" autocomplete="off"href="{{ url_for('game.startgame') }}">Restart</button>
+
+    <form action="">
+
+
+    <a href="{{ url_for('game.startgame') }}" class="btn btn-success">Restart Game</a>
+    </form>
+
+    
+    <button type="button" class="btn btn-warning">Show Hints</button>
   </div>
   
 </div>
