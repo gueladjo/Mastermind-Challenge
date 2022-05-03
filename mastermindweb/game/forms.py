@@ -6,6 +6,7 @@ from wtforms.validators import DataRequired,Email,EqualTo, NumberRange
 from wtforms import ValidationError
 from flask_wtf.file import FileField, FileAllowed
 from flask import request
+from mastermindweb.game.gaming import gamesettings
 
 # User Based Imports
 from flask_login import current_user
@@ -16,18 +17,13 @@ class GuessingForm(FlaskForm):
     guesscombo = StringField('guess',validators=[DataRequired()])
     submit = SubmitField('Guess!')
 
-    def validate_guess(form, field):
-        print(field)
-        if not field or len(str(field)) != 4: 
-            print("My input was a Invalid")
-            return False
+    def validate_guess(form, field, curr_level):
+        if not field or len(str(field)) != gamesettings[curr_level][0]: return False
         
         guess = str(field)
         for c in guess:
             if not c.isdigit():
-                print("My input was Invalid")
                 return False
-        print("My input was a valid number")
         return True
 
 

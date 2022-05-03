@@ -1,3 +1,4 @@
+import random
 from mastermindweb import app
 from flask import Flask, session
 from flask_session import Session
@@ -17,10 +18,12 @@ app.config.from_object(__name__)
 Session(app)
 
 
-################
+
 #Create namedtuple in order to store hints
 Hints = namedtuple('Hints', ['userguess', 'correctcount', 'wrongcount'])
 
+# sets combination settings and criterias 
+gamesettings = {'easy': [4, 7], 'medium':[5, 7], 'hard':[8, 10]}
 
 
 def resetdata():
@@ -28,6 +31,7 @@ def resetdata():
     session['answer']= ""
     session['guesses'] = []
     session['startedgame'] = False
+    session['level'] = ''
 
 def initializesession():
     if "answer" not in session:
@@ -38,6 +42,8 @@ def initializesession():
         session['guesses'] = []
     if 'startedgame' not in session:
         session['startedgame'] = False
+    if 'level' not in session:
+        session['level'] = ''
     
 
 def calcultatescore():
@@ -63,8 +69,20 @@ def calculateposition(userguess):
 
 
 
+
+# Combination length --> represents how many digits combination can contain
+# numberofcombination --> represesents the total different numbers combination can have
+def generatenumbercombination(combinationlen, numberofcombination):
+    codecombination = ""
+    for i in range(combinationlen):
+        codecombination += str(random.randint(0, numberofcombination))
+    
+    #Add response key to session
+    session["answer"] = codecombination
+
+# Get hints in decreasing order of total position found #
+# Format: tuple:(userguess, correctpos, wrongpos)
 def gethints():
-    # Get hints by decreasing order of total position found #
     return sorted(session['guesses'], key=lambda x: x[1] + x[2], reverse=True)
                 
 

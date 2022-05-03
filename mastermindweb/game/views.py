@@ -2,13 +2,13 @@ from tracemalloc import start
 from turtle import position
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
-from mastermindweb.game.gaming import initializesession, resetdata, calcultatescore, calculateposition, Hints, gethints
+from mastermindweb.game.gaming import generatenumbercombination, initializesession, resetdata, calcultatescore, calculateposition, Hints, gethints
+from mastermindweb.game.gaming import generatenumbercombination, gamesettings
 from mastermindweb.game.forms import GuessingForm
 from flask_restful import abort
 from mastermindweb import db
 from mastermindweb import app
 from flask import Flask, session
-import random
 
 game = Blueprint('game', __name__)
 ##########Store guesses in set#########
@@ -24,14 +24,25 @@ def chooselevel():
 def startgame():
     ###########Adding values to keys to prevent key errors###########
     initializesession()
-    startedgame = False
-    isvalid = False
+    startedgame, isvalid = False, False
+
     ####Save user input into guess variable#####
     form = GuessingForm()
-    #validated = True if form.validate_on_submit() or form.validate_guess(form.guesscombo.data) else False
+
+    current_level = 'easy'
+
+    if request.method == 'POST':
+        post_restart = request.form.get('restart')
+        if post_restart is not None:
+            resetdata()
+            generatenumbercombination(gamesettings[current_level][0], gamesettings[current_level][1])
+            return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,session['attempts']), 
+                            correctposition=0, wrongposition=0)
+
+
 
     userguess = form.guesscombo.data
-    isvalid = True if form.validate_guess(userguess) and userguess != 'None' else isvalid
+    isvalid = True if form.validate_guess(userguess, current_level) and userguess != 'None' else isvalid
 
 
     #print(f"These are the forms {validated}")
@@ -65,12 +76,10 @@ def startgame():
 
     
     print(f"Session attempts: {session['attempts']}        Has game started ? : {session['startedgame']}")
+
     if session['attempts'] == 0 and not session['startedgame']:
-        
-        answercode = ""
-        for i in range(4):
-            answercode += str(random.randint(0, 8))
-        session["answer"] = answercode
+        generatenumbercombination(gamesettings[current_level][0], gamesettings[current_level][1])
+
     session['attempts'] += 1 if isvalid else 0
     session['startedgame'] = True
     print(f"guess: {userguess}  attempts: {session['attempts']}")
