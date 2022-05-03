@@ -26,12 +26,3 @@ class GuessingForm(FlaskForm):
                 return False
         return True
 
-
-
-
-####Use below to check whether current guess already exists in database
-####To decide later whether to insert previous guesses to databases or simply use add to a  set and lookup later#
-
-#    def validate_guess(self, guess):
- #       if User.query.filter_by(guess=self.guess.data).first():
-  #          raise ValidationError('You have made this guess already')

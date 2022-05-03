@@ -29,7 +29,7 @@ def startgame():
     ####Save user input into guess variable#####
     form = GuessingForm()
 
-    current_level = 'easy'
+    current_level = 'medium'
 
     if request.method == 'POST':
         post_restart = request.form.get('restart')
@@ -50,7 +50,7 @@ def startgame():
         print("There is error in passed in guess")
         flash('Please enter a valid number combination!') 
         return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(1,session['attempts']), 
-                            correctposition=0, wrongposition=0)
+                            correctposition=0, wrongposition=0, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1])
 
     positions = calculateposition(userguess)
     correctposition = positions[0] if positions else 0
@@ -72,7 +72,7 @@ def startgame():
         hints = gethints()
         print(hints)
         return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,attempts), 
-                            correctposition=correctposition, wrongposition=wrongposition)
+                            correctposition=correctposition, wrongposition=wrongposition, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1])
 
     
     print(f"Session attempts: {session['attempts']}        Has game started ? : {session['startedgame']}")
@@ -86,7 +86,7 @@ def startgame():
 
     
     return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,session['attempts']), 
-                            correctposition=correctposition, wrongposition=wrongposition)
+                            correctposition=correctposition, wrongposition=wrongposition, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1])
 
 
 

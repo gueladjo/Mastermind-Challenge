@@ -4,13 +4,23 @@
     <p>
 
     </p>
-    <h3> I've chosen a 4 digit number combination from 0 to 7, can you guess it ? </h3>
+    <h3> I've chosen a {{digitlen}} digit number combination from 0 to {{maxnum}}, can you guess it ? </h3>
 
 
     <form  class="form form-horizontal" method="POST">
         {{ form.hidden_tag() }}
         <div class="form-group">
-            {{ form.guesscombo(class_="form-control", size=10, placeholder="ex: If your guess is 1234, write 1234") }}
+
+          {% if digitlen == 4%}
+          {{ form.guesscombo(class_="form-control", size=10, placeholder="ex: If your guess is 1234, write 1234") }}
+
+          {% elif digitlen == 5 %}
+            {{ form.guesscombo(class_="form-control", size=10, placeholder="ex: If your guess is 12345, write 12345") }}
+
+          {% else %}
+            {{ form.guesscombo(class_="form-control", size=10, placeholder="ex: If your guess is 12345678, write 12345678") }}
+          {% endif %}
+
         </div>
         {{ form.submit(class_="form form-horizontal") }}
     
