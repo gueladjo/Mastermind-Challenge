@@ -5,6 +5,7 @@ from wtforms import StringField, PasswordField, SubmitField, IntegerField
 from wtforms.validators import DataRequired,Email,EqualTo, NumberRange
 from wtforms import ValidationError
 from flask_wtf.file import FileField, FileAllowed
+from flask import request
 
 # User Based Imports
 from flask_login import current_user
@@ -16,12 +17,17 @@ class GuessingForm(FlaskForm):
     submit = SubmitField('Guess!')
 
     def validate_guess(form, field):
-        if not field or len(str(field.data)) != 4: return False
+        print(field)
+        if not field or len(str(field)) != 4: 
+            print("My input was a Invalid")
+            return False
         
         guess = str(field)
         for c in guess:
             if not c.isdigit():
-                return False 
+                print("My input was Invalid")
+                return False
+        print("My input was a valid number")
         return True
 
 

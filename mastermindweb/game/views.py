@@ -25,21 +25,24 @@ def startgame():
     ###########Adding values to keys to prevent key errors###########
     initializesession()
     startedgame = False
+    isvalid = False
     ####Save user input into guess variable#####
     form = GuessingForm()
-    validated = True if form.validate_on_submit() or form.validate_guess(form.guesscombo.data) else False
+    #validated = True if form.validate_on_submit() or form.validate_guess(form.guesscombo.data) else False
+
+    userguess = form.guesscombo.data
+    isvalid = True if form.validate_guess(userguess) and userguess != 'None' else isvalid
 
 
-    print(f"These are the forms {validated}")
-    if validated == None or validated == False: 
+    #print(f"These are the forms {validated}")
+    if not isvalid and session['startedgame']: 
         print("There is error in passed in guess")
         flash('Please enter a valid number combination!') 
         return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(1,session['attempts']), 
                             correctposition=0, wrongposition=0)
 
 
-    guess = str(form.guesscombo.data)
-    if guess != 'None' or not validated: session['guesses'].append(guess)
+    if isvalid: session['guesses'].append(userguess)
     print(f"Previous guesses are {session['guesses']}")
 
     positions = calculateposition()
@@ -47,28 +50,32 @@ def startgame():
     wrongpositiondigits = positions[1] if positions else 0
 
 
-    print((guess, session['answer'] if session['answer'] else ""))
+    print((userguess, session['answer'] if session['answer'] else ""))
     #######If we've found the answer##########################
-    if (guess and session['answer']) and guess == session['answer']: 
+    if isvalid and userguess == session['answer']: 
         print(f"You have found the correct positions in {session['attempts']} attempt(s)")
         score = calcultatescore()#####To implement later, we will also add to database in order to create leaderboard
+        attempts = session['attempts']
         resetdata()
         positions = (0, 0)
-        return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(1,session['attempts']), 
+        flash('Congratulations, You have won the game in {} attempts(s)'.format(attempts + 1)) 
+        return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,attempts), 
                             correctposition=correctpositiondigits, wrongposition=wrongpositiondigits)
 
     
+    print(f"Session attempts: {session['attempts']}        Has game started ? : {session['startedgame']}")
     if session['attempts'] == 0 and not session['startedgame']:
+        
         answercode = ""
         for i in range(4):
             answercode += str(random.randint(0, 8))
         session["answer"] = answercode
-    session['attempts'] += 1 if guess != 'None' or not validated else 0
+    session['attempts'] += 1 if isvalid else 0
     session['startedgame'] = True
-    print(f"guess: {guess}  attempts: {session['attempts']}")
+    print(f"guess: {userguess}  attempts: {session['attempts']}")
 
     
-    return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(1,session['attempts']), 
+    return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,session['attempts']), 
                             correctposition=correctpositiondigits, wrongposition=wrongpositiondigits)
 
 

@@ -28,7 +28,7 @@ def initializesession():
     if "answer" not in session:
         session["answer"]= ""
     if "attempts" not in session:
-        session["attempts"]=0
+        session["attempts"] = 0
     if 'guesses' not in session:
         session['guesses'] = []
     if 'startedgame' not in session:
