@@ -12,14 +12,17 @@ from mastermindweb.models import User
 
 
 class GuessingForm(FlaskForm):
-    guesscombo = IntegerField('guess',validators=[DataRequired(), NumberRange(max=9999)])
+    guesscombo = StringField('guess',validators=[DataRequired()])
     submit = SubmitField('Guess!')
 
     def validate_guess(form, field):
-        if str(field) == "0000":
-            return True
-        elif not field or len(str(field.data)) != 4:
-            return False
+        if not field or len(str(field.data)) != 4: return False
+        
+        guess = str(field)
+        for c in guess:
+            if not c.isdigit():
+                return False 
+        return True
 
 
 

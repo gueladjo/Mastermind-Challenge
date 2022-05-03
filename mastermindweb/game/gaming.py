@@ -32,7 +32,7 @@ def initializesession():
     if 'guesses' not in session:
         session['guesses'] = []
     if 'startedgame' not in session:
-        session['startedgame'] = []
+        session['startedgame'] = False
     
 
 def calcultatescore():

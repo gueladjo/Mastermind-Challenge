@@ -27,11 +27,12 @@ def startgame():
     startedgame = False
     ####Save user input into guess variable#####
     form = GuessingForm()
-    validated = form.validate_on_submit() or form.validate_guess(form.guesscombo)
+    validated = True if form.validate_on_submit() or form.validate_guess(form.guesscombo.data) else False
 
 
     print(f"These are the forms {validated}")
     if validated == None or validated == False: 
+        print("There is error in passed in guess")
         flash('Please enter a valid number combination!') 
         return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(1,session['attempts']), 
                             correctposition=0, wrongposition=0)
@@ -60,7 +61,7 @@ def startgame():
     if session['attempts'] == 0 and not session['startedgame']:
         answercode = ""
         for i in range(4):
-            answercode += str(random.randint(0, 9))
+            answercode += str(random.randint(0, 8))
         session["answer"] = answercode
     session['attempts'] += 1 if guess != 'None' or not validated else 0
     session['startedgame'] = True
