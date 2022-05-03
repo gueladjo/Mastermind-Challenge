@@ -37,7 +37,7 @@ def startgame():
             resetdata()
             generatenumbercombination(gamesettings[current_level][0], gamesettings[current_level][1])
             return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,session['attempts']), 
-                            correctposition=0, wrongposition=0)
+                            correctposition=0, wrongposition=0, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1])
 
 
 
