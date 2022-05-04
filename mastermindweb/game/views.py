@@ -20,8 +20,8 @@ def chooselevel():
     return render_template('game_pages/levelpage.html')
 
 
-@game.route('/startgame/mastermind', methods=['GET', 'POST'])
-def startgame():
+@game.route('/startgame/<level>/mastermind', methods=['GET', 'POST'])
+def startgame(level):
     ###########Adding values to keys to prevent key errors###########
     initializesession()
     startedgame, isvalid = False, False
@@ -29,7 +29,8 @@ def startgame():
     ####Save user input into guess variable#####
     form = GuessingForm()
 
-    current_level = 'medium'
+    current_level = level
+
 
     if request.method == 'POST':
         post_restart = request.form.get('restart')
