@@ -1,5 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
+
+
+<div style="position: relative; width: 250px;">
+  <div style="position: absolute; top: 0; right: 0; width: 100px; text-align:right;">
+  </div>
+  <br> <b>Remaining attempts:</b>  <br />
+  <h1 style="color: darkblue;">{{attempts}}</h1> <br />
+</div>
+
+
+<body>
   <div class="jumbotron">
     <p>
 
@@ -31,8 +42,7 @@
 
     <br>***Testing*** The generated guess is {{answer}}
 
-    <br> Attempts Remaining: {{attempts}}
-
+   
     <br>
     <br> <h2 style="color:dodgerblue">Correct position: {{correctposition}}</h2>
     <br> <h2 style="color:indianred">Wrong position: {{wrongposition}} </h2>
@@ -41,6 +51,13 @@
   </p>
 
   </div>
+
+   
+
+
+
+
+
 
 
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
@@ -111,7 +128,7 @@
     <thead>
       <tr>
         <th scope="col">Rank</th>
-        <th scope="col">Previous Guess</th>
+        <th scope="col">Previous Guesses</th>
         <th scope="col">Correct Position (REDS)</th>
         <th scope="col">Wrong Position (WHITES)</th>
       </tr>
