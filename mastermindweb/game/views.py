@@ -83,7 +83,7 @@ def startgame(level):
         print(f"You have found the correct positions in {session['attempts']} attempt(s)")
         score = calcultatescore()#####To implement later, we will also add to database in order to create leaderboard
         attempts = session['attempts']
-        resetdata()
+        resetdata(restart=True)
         positions = (0, 0)
         flash('Congratulations, You have won the game in {} attempts(s)'.format(attempts + 1))
         return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,attempts), 
@@ -94,7 +94,7 @@ def startgame(level):
 
 
     ###########################Generate a new combination only when a new game (attempts==0) ##############################
-    if session['attempts'] == 0 and not session['startedgame']:
+    if session['attempts'] == 0 and not session['startedgame'] and not session['answer']:
         generatenumbercombination(gamesettings[current_level][0], gamesettings[current_level][1])
 
     

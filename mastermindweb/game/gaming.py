@@ -26,12 +26,13 @@ Hints = namedtuple('Hints', ['userguess', 'correctcount', 'wrongcount'])
 gamesettings = {'easy': [4, 7], 'medium':[5, 7], 'hard':[8, 10]}
 
 
-def resetdata():
+def resetdata(restart=False):
     session['attempts'] = 0
     session['answer']= ""
     session['guesses'] = []
-    session['startedgame'] = False
     session['level'] = ''
+    if not restart:
+        session['startedgame'] = False #Handles behavior for restart
 
 def initializesession():
     if "answer" not in session:
@@ -81,7 +82,7 @@ def generatenumbercombination(combinationlen, numberofcombination):
     session["answer"] = codecombination
 
 # Get hints in decreasing order of total position found #
-# Format: tuple:(userguess, correctpos, wrongpos)
+# Format: List:tuple:[(userguess, correctpos, wrongpos)]
 def gethints():
     return sorted(session['guesses'], key=lambda x: x[1] + x[2], reverse=True)
                 
