@@ -46,10 +46,10 @@ def initializesession():
     if 'level' not in session:
         session['level'] = ''
     
-
+# Will evaluate User's Performance by assigning them a score 
 def calcultatescore():
     pass
-
+# Find RED and WHITE pins
 def calculateposition(userguess):
     reds, whites = 0, 0
     if not session['answer'] or not userguess: return (0, 0)
