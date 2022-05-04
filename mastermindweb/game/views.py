@@ -25,13 +25,12 @@ def startgame(level):
 
     # Initialize session dictionnary in order to store values based on cookies
     initializesession()
-    isvalid = False
-    hints= []
+    isvalid, LIMIT = False, True
+    hints, maxattempts = [], 10
    
     form = GuessingForm()  # User input form
 
     current_level = level 
-
 
     ############################## If user restarts page ############################################
     if request.method == 'POST':
@@ -39,8 +38,9 @@ def startgame(level):
         if post_restart is not None:
             resetdata()
             generatenumbercombination(gamesettings[current_level][0], gamesettings[current_level][1])
-            return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,session['attempts']), 
+            return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,maxattempts-session['attempts']), 
                             correctposition=0, wrongposition=0, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1],hints=hints)
+
 
 
 
@@ -57,7 +57,7 @@ def startgame(level):
     if not isvalid and session['startedgame']: #Also checking for if game started as blank form when you first clicked on page is False per our above processing
         print("There is error in passed in guess")
         flash('Please enter a valid number combination!') 
-        return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,session['attempts']), 
+        return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,maxattempts-session['attempts']), 
                             correctposition=0, wrongposition=0, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1], hints=hints)
     
 
@@ -86,11 +86,25 @@ def startgame(level):
         resetdata(restart=True)
         positions = (0, 0)
         flash('Congratulations, You have won the game in {} attempts(s)'.format(attempts + 1))
-        return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,attempts), 
+        return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,maxattempts - attempts), 
                             correctposition=correctposition, wrongposition=wrongposition, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1])
+    
+    ############################ If User exhausts Maximum attempts count #####################################
+    elif LIMIT and maxattempts - session['attempts'] == 1 and userguess != session['answer']: #Also checking for if LIMIT mode is activated as well if User has raminingattempts
+        flash('No more attempts left. Please restart game and try again!!!!') 
+        return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,maxattempts-session['attempts']), 
+                            correctposition=0, wrongposition=0, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1], hints=hints)
 
     
     print(f"Session attempts: {session['attempts']}        Has game started ? : {session['startedgame']}")
+
+
+
+
+
+
+
+
 
 
     ###########################Generate a new combination only when a new game (attempts==0) ##############################
@@ -104,7 +118,7 @@ def startgame(level):
     print(f"guess: {userguess}  attempts: {session['attempts']}")
 
     ##########################If we arrive here, we have not yet found the answer however our User input was valid ####################
-    return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,session['attempts']), 
+    return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,maxattempts-session['attempts']), 
                             correctposition=correctposition, wrongposition=wrongposition, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1],hints=hints)
 
 
