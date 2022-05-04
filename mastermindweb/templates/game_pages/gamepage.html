@@ -93,10 +93,63 @@
       </form>
 
 
-    <button type="button" class="btn btn-warning">Show Hints</button>
+      <button class="btn btn-warning" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+        Show Hints
+         </button>
   </div>
   
 </div>
 
+
+
+
+<p>
+  
+</p>
+<div class="collapse" id="collapseExample">
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Rank</th>
+        <th scope="col">Previous Guess</th>
+        <th scope="col">Correct Position (REDS)</th>
+        <th scope="col">Wrong Position (WHITES)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for hint in hints %}
+      <tr>
+        <th scope="row">{{loop.index}}</th>
+        <td>{{hint[0]}}</td>
+        <td>{{hint[1]}}</td>
+        <td>{{hint[2]}}</td>
+      </tr>
+    </tbody>
+    {% endfor %}
+  </table>
+</div>
+<script>
+$(document).ready(function() {
+
+  
+$('[data-toggle="collapse"]').click(function() {
+  $(this).toggleClass( "active" );
+  if ($(this).hasClass("active")) {
+    $(this).text("Hide");
+  } else {
+    $(this).text("Show Hints");
+  }
+});
+  
+  
+// document ready  
+});
+
+
+</script>
+
   
 {% endblock %}
+
+
+

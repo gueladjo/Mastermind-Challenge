@@ -26,7 +26,7 @@ def startgame(level):
     # Initialize session dictionnary in order to store values based on cookies
     initializesession()
     isvalid = False
-
+    hints= []
    
     form = GuessingForm()  # User input form
 
@@ -40,7 +40,7 @@ def startgame(level):
             resetdata()
             generatenumbercombination(gamesettings[current_level][0], gamesettings[current_level][1])
             return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,session['attempts']), 
-                            correctposition=0, wrongposition=0, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1])
+                            correctposition=0, wrongposition=0, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1],hints=hints)
 
 
 
@@ -48,13 +48,17 @@ def startgame(level):
     userguess = form.guesscombo.data #Retrieve user input from Flask Forms
     isvalid = True if form.validate_guess(userguess, current_level) and userguess != 'None' else isvalid #isvalid boolean for string processing, changes criteria based on level parameter
 
+    
+    if session['startedgame'] == True:
+        hints = gethints()
+        print(hints)
 
     ############################ If Input passed by User is not valid #####################################
     if not isvalid and session['startedgame']: #Also checking for if game started as blank form when you first clicked on page is False per our above processing
         print("There is error in passed in guess")
         flash('Please enter a valid number combination!') 
         return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,session['attempts']), 
-                            correctposition=0, wrongposition=0, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1])
+                            correctposition=0, wrongposition=0, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1], hints=hints)
     
 
 
@@ -63,7 +67,7 @@ def startgame(level):
     wrongposition = positions[1] if positions else 0
 
 
-    if isvalid: session['guesses'].append(Hints(userguess, correctposition, wrongposition)) # Save down previous valid user inputs for Hints
+    if isvalid: session['guesses'].append((userguess, correctposition, wrongposition)) # Save down previous valid user inputs for Hints
     
     
     print(f"Previous guesses are {session['guesses']}")
@@ -82,8 +86,6 @@ def startgame(level):
         resetdata()
         positions = (0, 0)
         flash('Congratulations, You have won the game in {} attempts(s)'.format(attempts + 1))
-        hints = gethints()
-        print(hints)
         return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,attempts), 
                             correctposition=correctposition, wrongposition=wrongposition, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1])
 
@@ -95,14 +97,15 @@ def startgame(level):
     if session['attempts'] == 0 and not session['startedgame']:
         generatenumbercombination(gamesettings[current_level][0], gamesettings[current_level][1])
 
+    
+
     session['attempts'] += 1 if isvalid else 0 # Only count valid attempts 
     session['startedgame'] = True # Change state of game to 'started'
     print(f"guess: {userguess}  attempts: {session['attempts']}")
 
-    
     ##########################If we arrive here, we have not yet found the answer however our User input was valid ####################
     return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,session['attempts']), 
-                            correctposition=correctposition, wrongposition=wrongposition, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1])
+                            correctposition=correctposition, wrongposition=wrongposition, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1],hints=hints)
 
 
 
