@@ -13,6 +13,9 @@ users = Blueprint('users', __name__)
 def register():
     form = RegistrationForm()
 
+    if not form.validate_on_submit():
+        flash('Please enter valid email/password and username')
+
     if form.validate_on_submit():
         user = User(email=form.email.data,
                     username=form.username.data,
@@ -28,13 +31,15 @@ def register():
 def login():
 
     form = LoginForm()
+
     if form.validate_on_submit():
         # Grab the user from our User Models table
         user = User.query.filter_by(email=form.email.data).first()
-
         # Check that the user was supplied and the password is right
         # The verify_password method comes from the User object
 
+        if not user or not user.check_password(form.password.data):
+            flash('Please enter valid email and password')
 
         if user and user.check_password(form.password.data):
             #Log in the user
@@ -60,6 +65,7 @@ def login():
 @users.route("/logout")
 def logout():
     logout_user()
+    flash('You are now logged out!')
     return redirect(url_for('core.index'))
 
 

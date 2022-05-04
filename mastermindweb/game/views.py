@@ -2,73 +2,124 @@ from tracemalloc import start
 from turtle import position
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
-from mastermindweb.game.gaming import initializesession, resetdata, calcultatescore, calculateposition
+from mastermindweb.game.gaming import generatenumbercombination, initializesession, resetdata, calcultatescore, calculateposition, Hints, gethints
+from mastermindweb.game.gaming import generatenumbercombination, gamesettings
 from mastermindweb.game.forms import GuessingForm
 from flask_restful import abort
 from mastermindweb import db
 from mastermindweb import app
 from flask import Flask, session
-import random
 
 game = Blueprint('game', __name__)
-##########Store guesses in set#########
 
-
+# Page for User to choose level
 @game.route('/dificulty', methods=['GET', 'POST'])
 def chooselevel():
     
     return render_template('game_pages/levelpage.html')
 
+# View page that runs the game
+# Game difficulty is chosen based on passed parameter
+@game.route('/startgame/<level>/mastermind', methods=['GET', 'POST'])
+def startgame(level):
 
-@game.route('/startgame/mastermind', methods=['GET', 'POST'])
-def startgame():
-    ###########Adding values to keys to prevent key errors###########
+    # Initialize session dictionnary in order to store values based on cookies
     initializesession()
-    startedgame = False
-    ####Save user input into guess variable#####
-    form = GuessingForm()
-    validated = form.validate_on_submit() or form.validate_guess(form.guesscombo)
+    isvalid, LIMIT = False, True
+    hints, maxattempts = [], 10
+   
+    form = GuessingForm()  # User input form
+
+    current_level = level 
+
+    ############################## If user restarts page ############################################
+    if request.method == 'POST':
+        post_restart = request.form.get('restart')
+        if post_restart is not None:
+            resetdata()
+            generatenumbercombination(gamesettings[current_level][0], gamesettings[current_level][1])
+            return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,maxattempts-session['attempts']), 
+                            correctposition=0, wrongposition=0, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1],hints=hints)
 
 
-    print(f"These are the forms {validated}")
-    if validated == None or validated == False: 
+
+
+
+    userguess = form.guesscombo.data #Retrieve user input from Flask Forms
+    isvalid = True if form.validate_guess(userguess, current_level) and userguess != 'None' else isvalid #isvalid boolean for string processing, changes criteria based on level parameter
+
+    
+    if session['startedgame'] == True:
+        hints = gethints()
+        print(hints)
+
+    ############################ If Input passed by User is not valid #####################################
+    if not isvalid and session['startedgame']: #Also checking for if game started as blank form when you first clicked on page is False per our above processing
+        print("There is error in passed in guess")
         flash('Please enter a valid number combination!') 
-        return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(1,session['attempts']), 
-                            correctposition=0, wrongposition=0)
+        return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,maxattempts-session['attempts']), 
+                            correctposition=0, wrongposition=0, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1], hints=hints)
+    
 
 
-    guess = str(form.guesscombo.data)
-    if guess != 'None' or not validated: session['guesses'].append(guess)
+    positions = calculateposition(userguess) # Process which user input for correctness  ----> reds : whites
+    correctposition = positions[0] if positions else 0
+    wrongposition = positions[1] if positions else 0
+
+
+    if isvalid: session['guesses'].append((userguess, correctposition, wrongposition)) # Save down previous valid user inputs for Hints
+    
+    
     print(f"Previous guesses are {session['guesses']}")
-
-    positions = calculateposition()
-    correctpositiondigits = positions[0] if positions else 0
-    wrongpositiondigits = positions[1] if positions else 0
+    print((userguess, session['answer'] if session['answer'] else ""))
 
 
-    print((guess, session['answer'] if session['answer'] else ""))
-    #######If we've found the answer##########################
-    if (guess and session['answer']) and guess == session['answer']: 
+
+
+
+
+    ############################# Notifiy User if they find correct answer and reinitilize/reset game state ##########################
+    if isvalid and userguess == session['answer']: 
         print(f"You have found the correct positions in {session['attempts']} attempt(s)")
         score = calcultatescore()#####To implement later, we will also add to database in order to create leaderboard
-        resetdata()
+        attempts = session['attempts']
+        resetdata(restart=True)
         positions = (0, 0)
-        return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(1,session['attempts']), 
-                            correctposition=correctpositiondigits, wrongposition=wrongpositiondigits)
+        flash('Congratulations, You have won the game in {} attempts(s)'.format(attempts + 1))
+        return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,maxattempts - attempts), 
+                            correctposition=correctposition, wrongposition=wrongposition, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1])
+    
+    ############################ If User exhausts Maximum attempts count #####################################
+    elif LIMIT and maxattempts - session['attempts'] == 1 and userguess != session['answer']: #Also checking for if LIMIT mode is activated as well if User has raminingattempts
+        flash('No more attempts left. Please restart game and try again!!!!') 
+        return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,maxattempts-session['attempts']), 
+                            correctposition=0, wrongposition=0, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1], hints=hints)
 
     
-    if session['attempts'] == 0 and not session['startedgame']:
-        answercode = ""
-        for i in range(4):
-            answercode += str(random.randint(0, 9))
-        session["answer"] = answercode
-    session['attempts'] += 1 if guess != 'None' or not validated else 0
-    session['startedgame'] = True
-    print(f"guess: {guess}  attempts: {session['attempts']}")
+    print(f"Session attempts: {session['attempts']}        Has game started ? : {session['startedgame']}")
+
+
+
+
+
+
+
+
+
+
+    ###########################Generate a new combination only when a new game (attempts==0) ##############################
+    if session['attempts'] == 0 and not session['startedgame'] and not session['answer']:
+        generatenumbercombination(gamesettings[current_level][0], gamesettings[current_level][1])
 
     
-    return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(1,session['attempts']), 
-                            correctposition=correctpositiondigits, wrongposition=wrongpositiondigits)
+
+    session['attempts'] += 1 if isvalid else 0 # Only count valid attempts 
+    session['startedgame'] = True # Change state of game to 'started'
+    print(f"guess: {userguess}  attempts: {session['attempts']}")
+
+    ##########################If we arrive here, we have not yet found the answer however our User input was valid ####################
+    return render_template('game_pages/gamepage.html', form=form, answer=session['answer'], attempts=max(0,maxattempts-session['attempts']), 
+                            correctposition=correctposition, wrongposition=wrongposition, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1],hints=hints)
 
 
 

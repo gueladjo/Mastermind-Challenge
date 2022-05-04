@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-  <div class="jumbotron">
+  <div class="jumbotron text-center">
     <p>
 
     </p>
@@ -12,14 +12,14 @@
 
     <p>
 
-      <a href="{{ url_for('game.startgame') }}" class="btn btn-success">Easy</a>
+      <a href="{{ url_for('game.startgame', level='easy') }}" class="btn btn-success">Easy</a>
 
 
 
-        <button type="button" class="btn btn-warning">Medium</button>
+      <a href="{{ url_for('game.startgame', level='medium') }}" class="btn btn-warning">Medium</a>
 
         
-        <button type="button" class="btn btn-danger">Hard</button>
+      <a href="{{ url_for('game.startgame', level='hard') }}" class="btn btn-danger">Hard</a>
 
   </p>
 
