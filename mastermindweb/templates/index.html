@@ -5,6 +5,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
+<!--  
+Check if there are any toasts to display
+If there are, display notification to user
+--> 
 {% if get_flashed_messages() %}
 <body>
 <div class="toast" data-autohide="false">
@@ -44,6 +48,10 @@
 </div>
 
 
+
+<!--  
+Use Bootstrap card component to display game"
+--> 
 
   <div class="card" style="width: 35rem;">
     <img src="https://www.boardgameswizard.com/wp-content/uploads/2020/08/Mastermind-close-up-picture.jpg" class="card-img-top" alt="...">
