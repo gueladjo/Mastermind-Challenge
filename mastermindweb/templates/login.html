@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
+
+<!--  
+Update instance of Flask Form from forms.py and pass back to server
+--> 
 <br>
 <form  class="form form-horizontal" method="POST">
     {{ form.hidden_tag() }}
@@ -16,7 +20,9 @@
 </form>
 
 
-
+<!--  
+Checks then displays existing toasts
+--> 
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

@@ -18,7 +18,10 @@
 
 
 
-
+<!--  
+Navigation bar implementation 
+Verify if user is autheticated to determine which button to show/hide
+--> 
 
     <nav class="navbar navbar-collapse-lg navbar-dark bg-dark">
       <div class="container-fluid">
@@ -41,7 +44,9 @@
               <a class="nav-link active" aria-current="page" href="{{ url_for('core.index') }}">Home</a>
             </li>
 
-
+            <!--  
+            Display button based on login status
+            --> 
             {% if current_user.is_authenticated %}
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('users.account') }}">Account</a>

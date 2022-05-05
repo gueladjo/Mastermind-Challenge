@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
+
+<!--  
+Update instance of Flask Form from forms.py and pass back to server
+--> 
 <form  class="form form-horizontal" method="POST">
     {# This hidden_tag is a CSRF security feature. #}
     {{ form.hidden_tag() }}
