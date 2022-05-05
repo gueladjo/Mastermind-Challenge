@@ -2,6 +2,10 @@
 {% block content %}
 
 
+<!--  
+Handles div for remaining attempts display
+--> 
+
 <div style="position: relative; width: 250px;">
   <div style="position: absolute; top: 0; right: 0; width: 100px; text-align:right;">
   </div>
@@ -39,10 +43,8 @@
 
 
 
-
-    <br>***Testing*** The generated guess is {{answer}}
-
-   
+<!--  
+    <br>***Testing*** The generated guess is {{answer}} --> 
     <br>
     <br> <h2 style="color:dodgerblue">Correct position: {{correctposition}}</h2>
     <br> <h2 style="color:indianred">Wrong position: {{wrongposition}} </h2>
@@ -58,7 +60,9 @@
 
 
 
-
+<!--  
+Checks if there are any toasts and display them 
+--> 
 
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -91,7 +95,9 @@
 {% endif %}
 
 
-
+<!--  
+Restart Hints button and Show hints button
+--> 
 <div class="text-center"> 
   <div class="d-grid gap-2 col-3 mx-auto">
 
@@ -109,7 +115,9 @@
 
 
 
-
+<!--  
+Table for Hints/Previous guesses 
+--> 
 <p>
   
 </p>
