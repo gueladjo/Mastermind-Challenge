@@ -15,7 +15,7 @@ game = Blueprint('game', __name__)
 # Page for User to choose level
 @game.route('/dificulty', methods=['GET', 'POST'])
 def chooselevel():
-    
+    #@ Review comment: Delete this unecessary white line
     return render_template('game_pages/levelpage.html')
 
 # View page that runs the game
@@ -46,9 +46,11 @@ def startgame(level):
 
 
     userguess = form.guesscombo.data #Retrieve user input from Flask Forms
+        #@ Review comment: This is correct but shouldn't it be else false instead of else isvalid. For clarity.
     isvalid = True if form.validate_guess(userguess, current_level) and userguess != 'None' else isvalid #isvalid boolean for string processing, changes criteria based on level parameter
 
-    
+    #@ Review comment: This should be moved after the next block that checks isvalid. Because if input is not valid you are executing the hints code without
+    #@ reason.
     if session['startedgame'] == True:
         hints = gethints()
         print(hints)
@@ -61,7 +63,8 @@ def startgame(level):
                             correctposition=0, wrongposition=0, digitlen=len(session['answer']), maxnum=gamesettings[current_level][1], hints=hints)
     
 
-
+    #@ Review comment: Similar to Settings case, it is better to use a class with explicit naming instead of digit: a class Position with parameters
+    #@ position.reds and position.whites, which can be boolean for example. More clear than positions[0].
     positions = calculateposition(userguess) # Process which user input for correctness  ----> reds : whites
     correctposition = positions[0] if positions else 0
     wrongposition = positions[1] if positions else 0
