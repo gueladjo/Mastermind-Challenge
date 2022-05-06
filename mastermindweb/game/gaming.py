@@ -5,7 +5,7 @@ from flask_session import Session
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from collections import namedtuple
 #@ Review comment: Try to clean up all the unecessary white lines in your files. In most cases one white line is enough.
-
+#@Review comment: Naming convention is inconsistent, for example isvalid should be is_valid. and useguess should be user_guess.
 
 
 gaming = Blueprint('game', __name__)
