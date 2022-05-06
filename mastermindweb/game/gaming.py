@@ -4,7 +4,7 @@ from flask import Flask, session
 from flask_session import Session
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from collections import namedtuple
-
+#@ Review comment: Try to clean up all the unecessary white lines in your files. In most cases one white line is enough.
 
 
 
@@ -22,6 +22,10 @@ Session(app)
 #Create namedtuple in order to store hints
 Hints = namedtuple('Hints', ['userguess', 'correctcount', 'wrongcount'])
 
+#@ Review comment: This would usually be done with a class Settings that has public members number of digits and number of combinations. You would
+#@ use it like gamesettings['easy'].number_of_digits which is clearer than gamesettings['easy'][0] where it is not clear what 0 really represents.
+#@ Also total number of available digit is supposed to be 8 by default not 7 so would recommend making it 8 here and modifying generatenumbercombination to use
+#@ numberofcombination - 1 instead. It makes it clearer.
 # sets combination settings and criterias 
 gamesettings = {'easy': [4, 7], 'medium':[5, 7], 'hard':[8, 10]}
 
@@ -46,9 +50,11 @@ def initializesession():
     if 'level' not in session:
         session['level'] = ''
     
+#@ Review comment: delete this if it is not implemented.    
 # Will evaluate User's Performance by assigning them a score 
 def calcultatescore():
     pass
+#@ Review comment: add a white line to separate the two functions    
 # Find RED and WHITE pins
 def calculateposition(userguess):
     reds, whites = 0, 0
@@ -75,6 +81,7 @@ def calculateposition(userguess):
 # numberofcombination --> represesents the total different numbers combination can have
 def generatenumbercombination(combinationlen, numberofcombination):
     codecombination = ""
+    #@ Review comment: Are you using the http API they tell you to use in the project plan ? This looks like default Python random API.
     for i in range(combinationlen):
         codecombination += str(random.randint(0, numberofcombination))
     
